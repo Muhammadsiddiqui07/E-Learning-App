@@ -10,6 +10,7 @@
 
 # production
 /build
+/E:\React-practice\e-learning\src\firebase-setup
 
 # misc
 .DS_Store

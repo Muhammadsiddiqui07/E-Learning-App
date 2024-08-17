@@ -1,38 +1,577 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.loginContainer {
+  margin-top: 20px;
+  height: 18%;
+  width: 100%;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  align-items: center;
+}
+
+.header {
+  max-width: 100%;
+  background-color: blueviolet;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  margin-top: -35px;
+  height: 9em;
+}
+
+.header>h1 {
+  padding: 50px;
+}
+
+.LoginForm {
+  height: 80%;
+  width: 100%;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+  padding: 30px;
+}
+
+.headerlinkPosition {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* width: 35%; */
+  margin-right: 20px;
+  text-decoration: none;
+  color: white !important;
+}
+
+.headerlinkPosition>button {
+  color: white;
+  font-size: 15px;
+}
+
+.SignupContainer {
+  height: 19%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.img-btn {
+  width: 1000%;
+  height: 100%;
+}
+
+.btn-main {
+  margin-left: 50px;
+}
+
+.btn-main>button {
+  margin: 10px;
+}
+
+.ProfielPicture {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 10em;
+  /* background-color: aqua; */
+  /* display: block; */
+  /* margin: 0 auto; */
+}
+
+.ProfielPicture>img {
+  width: 150px;
+  /* margin-bottom: 5 0px; */
+  border-radius: 100px;
+}
+
+.image-upload {
+  margin-top: 120px;
+}
+
+.image-upload {
+  position: relative;
+  display: inline-block;
+}
+
+.image-upload label {
+  display: block;
+  cursor: pointer;
+}
+
+.image-upload input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.profileCard {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dashProfile {
+  width: 80%;
+  height: 100%;
+  border-radius: 100px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.headingAdmDAsh {
+  margin-left: 30px;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.DetailAdmDash {
+  /* background-color: beige; */
+  width: 100%;
+  box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.dashboardHeader {
+  width: 90%;
+  margin-left: 20px;
+  padding: 20px;
+}
+
+.dashboardHeader2 {
+  display: flex;
+  justify-content: space-between;
+}
+
+.container {
+  height: 100%;
+  display: flex;
+}
+
+.mainContainer {
+  display: block;
+  margin-bottom: 100px;
+  color: white;
+  text-align: center;
+}
+
+.dashSidePortion {
+  width: 30%;
+  height: 43em;
+  padding: 10px;
+  background-color: blueviolet;
+}
+
+.proViewImage {
+  width: 35%;
+}
+
+.ProfileModal {
+  width: 90%;
+}
+
+.loginpart {
+  display: flex;
+  justify-content: space-around;
+}
+
+.loginImgDiv {
+  width: 60%;
+}
+
+.loginImgDiv>img {
+  width: 100%;
+  min-width: auto;
+  height: 30em;
+}
+
+.signupPart {
+  display: flex;
+  justify-content: space-between;
+}
+
+.signupImg {
+  width: 65%;
+}
+
+.signupImg>img {
+  width: 100%;
+  height: 30em;
+}
+
+.DashHeader {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dashHeadPic {
+  width: 50px;
+  border-radius: 100px;
+}
+
+.dashHeadPicMain {
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.Courses-btn {
+  background-color: blueviolet;
+  width: 100%;
+}
+
+.Courses-btn:hover {
+  padding: 20px;
+  background-color: blueviolet !important;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+}
+
+.CourseDash1 {
+  background-color: aqua;
+  width: 100%;
+  background-image: url('../src/Assest/course-1.jpg');
+  padding: 20px;
+  margin-top: 30px;
+
+}
+
+.CourseDash2 {
+  background-color: aqua;
+  width: 100%;
+  background-image: url('../src/Assest/course-2.jpg');
+  padding: 20px;
+  margin-top: 30px;
+
+}
+
+.CourseDash3 {
+  background-color: aqua;
+  width: 100%;
+  background-image: url('../src/Assest/course-3.jpg');
+  padding: 20px;
+  margin-top: 30px;
+
+}
+
+.CourseDash4 {
+  background-color: aqua;
+  width: 100%;
+  background-image: url('../src/Assest/course-4.jpg');
+  padding: 20px;
+  margin-top: 30px;
+
+}
+
+.CourseDash5 {
+  background-color: aqua;
+  width: 100%;
+  background-image: url('../src/Assest/course-5.jpg');
+  padding: 20px;
+  margin-top: 30px;
+
+}
+
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 2rem;
   }
-  to {
-    transform: rotate(360deg);
+
+  .loginpart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .loginImgDiv img {
+    width: 100%;
+    height: auto;
+  }
+
+  .LoginForm {
+    width: 100%;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header h1 {
+    font-size: 1.5rem;
+  }
+
+  .loginImgDiv {
+    margin-bottom: 20px;
+  }
+
+  .LoginForm {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .signupPart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .signupImg img {
+    width: 100%;
+    height: auto;
+  }
+
+  .SignupForm {
+    width: 100%;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header h1 {
+    font-size: 1.5rem;
+  }
+
+  .signupImg {
+    margin-bottom: 20px;
+  }
+
+  .SignupForm {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .header-link-position {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .profile-container {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header h1 {
+    font-size: 1.5rem;
+  }
+
+  .header-link-position {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .profile-container {
+    padding: 5px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .dashboard {
+    flex-direction: column;
+  }
+
+  .dash-side {
+    flex: none;
+    padding: 15px;
+  }
+
+  .detail-section {
+    flex: none;
+    padding: 15px;
+  }
+
+  .main-container h1 {
+    font-size: 1.8rem;
+  }
+
+  .main-container p {
+    font-size: 0.9rem;
+  }
+
+  .nav-button h5 {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard {
+    flex-direction: column;
+  }
+
+  .dash-side {
+    padding: 10px;
+  }
+
+  .detail-section {
+    padding: 10px;
+  }
+
+  .main-container h1 {
+    font-size: 1.5rem;
+  }
+
+  .main-container p {
+    font-size: 0.8rem;
+  }
+
+  .nav-button {
+    padding: 15px;
+  }
+
+  .nav-button h5 {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard {
+    flex-direction: column;
+  }
+
+  .dash-side {
+    padding: 8px;
+  }
+
+  .detail-section {
+    padding: 8px;
+  }
+
+  .main-container h1 {
+    font-size: 1.2rem;
+  }
+
+  .main-container p {
+    font-size: 0.7rem;
+  }
+
+  .nav-button {
+    padding: 12px;
+  }
+
+  .nav-button h5 {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .profile-card,
+  .courses-card {
+    margin-bottom: 20px;
+  }
+
+  .proViewImage {
+    max-width: 120px;
+  }
+
+  h6 {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .profile-card,
+  .courses-card {
+    margin-bottom: 15px;
+  }
+
+  .proViewImage {
+    max-width: 100px;
+  }
+
+  h6 {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashSidePortion {
+    max-width: 100%;
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+
+  .DetailAdmDash {
+    max-width: 100%;
+  }
+
+  .admin-dashboard {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-button {
+    font-size: 14px;
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  p {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .Courses-btn {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .ant-card {
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 576px) {
+  .Courses-btn {
+    font-size: 14px;
+  }
+
+  .ant-card {
+    font-size: 14px;
+  }
+
+  .ant-table {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ant-card {
+    margin-bottom: 20px;
+  }
+
+  .ant-table {
+    font-size: 12px;
+  }
+
+  .ant-btn {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 576px) {
+  .ant-card {
+    font-size: 14px;
+  }
+
+  .ant-table {
+    font-size: 12px;
+  }
+
+  .ant-btn {
+    font-size: 12px;
   }
 }
