@@ -21,15 +21,24 @@ const Signup = () => {
                     className='LoginForm'
                     bordered={true}
                     style={{
-                        width: 1000,
+                        width: '80%',
+                        padding: 5,
+                        marginTop: 20
+
                     }}
                 >
                     <Spin spinning={isLoading}>
                         <div className='signupPart'>
-                            <div className='signupImg'>
+                            <div className='signupImg' style={{
+                                width: '50%'
+                            }}>
                                 <img src={signupImg} alt='signupImage' />
                             </div>
-                            <SignupForm handleSubmit={handleSubmit} />
+                            <div style={{
+                                width: '50%'
+                            }}>
+                                <SignupForm handleSubmit={handleSubmit} />
+                            </div>
                         </div>
                     </Spin>
                 </Card>

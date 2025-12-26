@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Button, Modal, TreeSelect, Form, Spin, Input, Table } from 'antd';
+import { Card, Button, Modal, TreeSelect, Form, Spin, Input, Table, Typography } from 'antd';
 import { db, collection, getDocs, query, where, addDoc } from '../firebase-setup/firebase';
 import DropDown from './dropDown';
 
@@ -18,94 +18,11 @@ const RegistrationForm = () => {
 
     const [form] = Form.useForm();
 
-    const showModal = () => {
-        setIsModalOpen(true);
-    };
-
-    const handleCancel = () => {
-        setIsModalOpen(false);
-    };
-
-    const onFinish = async (values) => {
-        setLoading(true);
-        console.log('Success:', values);
-        await addDoc(collection(db, "Registered-Course"), {
-            CourseCategory: values.Category,
-            courseTitle: values.Course,
-            uid: uid,
-            email: values.Email
-        });
-        console.log('Data submitted');
-        setLoading(false);
-        setIsModalOpen(false);
-        fetchRegisteredCourses(); // Fetch the updated registered courses
-    };
-
-    const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
-    };
-
-    const handleCategoryChange = (value) => {
-        setSelectedCategory(value);
-    };
-
-    useEffect(() => {
-        const fetchUserData = async () => {
-            const q = query(collection(db, "Users"), where("id", "==", uid));
-            const querySnapshot = await getDocs(q);
-            querySnapshot.forEach((doc) => {
-                setUserData(doc.data());
-            });
-        };
-
-        fetchUserData();
-    }, [uid]);
-
-    useEffect(() => {
-        const fetchCategories = async () => {
-            setLoadingCategories(true);
-            const querySnapshot = await getDocs(collection(db, "Courses"));
-            const uniqueCategories = new Set();
-
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                uniqueCategories.add(data.CourseCategory);
-            });
-
-            const formattedCategories = Array.from(uniqueCategories).map(category => ({
-                value: category,
-                title: category
-            }));
-            setCategories(formattedCategories);
-            setLoadingCategories(false);
-        };
-
-        fetchCategories();
-    }, []);
-
-    useEffect(() => {
-        const fetchCourses = async () => {
-            if (!selectedCategory) return;
-
-            setLoadingCourses(true);
-            const q = query(collection(db, "Courses"), where("CourseCategory", "==", selectedCategory));
-            const querySnapshot = await getDocs(q);
-            const coursesData = [];
-
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                coursesData.push({ value: data.CourseTitle, title: data.CourseTitle });
-            });
-
-            setCourses(coursesData);
-            setLoadingCourses(false);
-        };
-
-        fetchCourses();
-    }, [selectedCategory]);
+    const showModal = () => setIsModalOpen(true);
+    const handleCancel = () => setIsModalOpen(false);
 
     const fetchRegisteredCourses = async () => {
-        setTableLoading(true); // Set table loading to true
+        setTableLoading(true);
         const q = query(collection(db, "Registered-Course"), where("uid", "==", uid));
         const querySnapshot = await getDocs(q);
         const registeredCoursesData = [];
@@ -116,165 +33,158 @@ const RegistrationForm = () => {
                 key: doc.id,
                 Categories: data.CourseCategory,
                 Title: data.courseTitle,
-                Description: "Course Description" // Assuming you have a description field
+                Description: "Course Description"
             });
         });
 
         setRegisteredCourses(registeredCoursesData);
-        setTableLoading(false); // Set table loading to false
+        setTableLoading(false);
     };
 
-    useEffect(() => {
-        fetchRegisteredCourses();
-    }, []);
+    const fetchUserData = async () => {
+        const q = query(collection(db, "Users"), where("id", "==", uid));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => setUserData(doc.data()));
+    };
 
+    const fetchCategories = async () => {
+        setLoadingCategories(true);
+        const querySnapshot = await getDocs(collection(db, "Courses"));
+        const uniqueCategories = new Set();
+
+        querySnapshot.forEach((doc) => uniqueCategories.add(doc.data().CourseCategory));
+        setCategories(Array.from(uniqueCategories).map(cat => ({ title: cat, value: cat })));
+        setLoadingCategories(false);
+    };
+
+    const fetchCourses = async () => {
+        if (!selectedCategory) return;
+        setLoadingCourses(true);
+        const q = query(collection(db, "Courses"), where("CourseCategory", "==", selectedCategory));
+        const querySnapshot = await getDocs(q);
+        const coursesData = [];
+        querySnapshot.forEach((doc) => coursesData.push({ title: doc.data().CourseTitle, value: doc.data().CourseTitle }));
+        setCourses(coursesData);
+        setLoadingCourses(false);
+    };
+
+    useEffect(() => { fetchUserData(); fetchCategories(); fetchRegisteredCourses(); }, [uid]);
+    useEffect(() => { fetchCourses(); }, [selectedCategory]);
     useEffect(() => {
-        if (userData.id && userData.email) {
-            form.setFieldsValue({
-                id: userData.id,
-                Email: userData.email,
-            });
-        }
+        if (userData.id && userData.email) form.setFieldsValue({ id: userData.id, Email: userData.email });
     }, [userData, form]);
 
+    const onFinish = async (values) => {
+        setLoading(true);
+        await addDoc(collection(db, "Registered-Course"), {
+            CourseCategory: values.Category,
+            courseTitle: values.Course,
+            uid: uid,
+            email: values.Email
+        });
+        setLoading(false);
+        setIsModalOpen(false);
+        fetchRegisteredCourses();
+    };
+
     const columns = [
-        {
-            title: 'Categories',
-            dataIndex: 'Categories',
-            key: 'Categories',
-        },
-        {
-            title: 'Title',
-            dataIndex: 'Title',
-            key: 'Title',
-        },
-        {
-            title: 'Description',
-            dataIndex: 'Description',
-            key: 'Description',
-        },
+        { title: 'Categories', dataIndex: 'Categories', key: 'Categories' },
+        { title: 'Title', dataIndex: 'Title', key: 'Title' },
+        { title: 'Description', dataIndex: 'Description', key: 'Description' },
     ];
 
     return (
         <div style={{ width: '100%' }}>
-            <div className='DashHeader'>
-                <h1 style={{ color: 'blueviolet' }}>Course :</h1>
-                <div>
-                    <DropDown />
-                </div>
+            <div style={{ marginBottom: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography.Title level={3} style={{ color: 'blueviolet' }}>Course Registration</Typography.Title>
+                <DropDown />
             </div>
-            <br />
-            <br />
+
             <Card
-                title="Register Course :"
-                bordered={true}
-                style={{
-                    width: 300,
-                }}
+                style={{ marginBottom: 20, borderRadius: 12, boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
             >
                 <Button type="primary" onClick={showModal} style={{ backgroundColor: 'blueviolet' }}>
                     Enroll Through Form
                 </Button>
-                <Modal title="Fill Form" open={isModalOpen} onCancel={handleCancel} footer={null}>
-                    {loading ? (
-                        <Spin tip="Loading...">
-                            <div style={{ height: '200px' }}></div>
-                        </Spin>
-                    ) : (
-                        <Form
-                            form={form}
-                            onFinish={onFinish}
-                            onFinishFailed={onFinishFailed}
-                            autoComplete="off"
-                            initialValues={{ id: userData.id, Email: userData.email }}
-                        >
-                            <Form.Item
-                                label="Select Category"
-                                name="Category"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Please select a category!',
-                                    },
-                                ]}
-                            >
-                                {loadingCategories ? (
-                                    <Spin />
-                                ) : (
-                                    <TreeSelect
-                                        treeData={categories}
-                                        treeDefaultExpandAll
-                                        onChange={handleCategoryChange}
-                                    />
-                                )}
-                            </Form.Item>
-                            <Form.Item
-                                label="Select Course"
-                                name="Course"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Please select a course!',
-                                    },
-                                ]}
-                            >
-                                {loadingCourses ? (
-                                    <Spin />
-                                ) : (
-                                    <TreeSelect
-                                        treeData={courses}
-                                        treeDefaultExpandAll
-                                    />
-                                )}
-                            </Form.Item>
-
-                            <Form.Item
-                                label="Your ID"
-                                name="id"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Please input your ID!',
-                                    },
-                                ]}
-                            >
-                                <Input />
-                            </Form.Item>
-
-                            <Form.Item
-                                label="Email"
-                                name="Email"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Please input your Email!',
-                                    },
-                                ]}
-                            >
-                                <Input />
-                            </Form.Item>
-
-                            <Form.Item
-                                wrapperCol={{
-                                    offset: 6,
-                                    span: 16,
-                                }}
-                            >
-                                <Button type="primary" htmlType="submit" style={{ backgroundColor: 'blueviolet' }}>
-                                    Submit
-                                </Button>
-                            </Form.Item>
-                        </Form>
-                    )}
-                </Modal>
             </Card>
-            <div style={{ padding: '20px' }}>
-                {tableLoading ? (
-                    <Spin tip="Loading table data..." />
+
+            <Modal
+                title="Register Course"
+                open={isModalOpen}
+                onCancel={handleCancel}
+                footer={null}
+                centered
+                bodyStyle={{ padding: 20 }}
+            >
+                {loading ? (
+                    <Spin tip="Submitting..." />
                 ) : (
-                    <Table dataSource={registeredCourses} columns={columns} />
+                    <Form
+                        form={form}
+                        onFinish={onFinish}
+                        layout="vertical"
+                        autoComplete="off"
+                        initialValues={{ id: userData.id, Email: userData.email }}
+                    >
+                        <Form.Item
+                            label="Select Category"
+                            name="Category"
+                            rules={[{ required: true, message: 'Please select a category!' }]}
+                        >
+                            {loadingCategories ? <Spin /> :
+                                <TreeSelect
+                                    treeData={categories}
+                                    treeDefaultExpandAll
+                                    placeholder="Select Category"
+                                    onChange={val => setSelectedCategory(val)}
+                                />}
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Select Course"
+                            name="Course"
+                            rules={[{ required: true, message: 'Please select a course!' }]}
+                        >
+                            {loadingCourses ? <Spin /> :
+                                <TreeSelect
+                                    treeData={courses}
+                                    treeDefaultExpandAll
+                                    placeholder="Select Course"
+                                />}
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Your ID"
+                            name="id"
+                            rules={[{ required: true, message: 'Please input your ID!' }]}
+                        >
+                            <Input />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Email"
+                            name="Email"
+                            rules={[{ required: true, message: 'Please input your Email!' }]}
+                        >
+                            <Input />
+                        </Form.Item>
+
+                        <Form.Item>
+                            <Button type="primary" htmlType="submit" style={{ backgroundColor: 'blueviolet' }} block>
+                                Submit
+                            </Button>
+                        </Form.Item>
+                    </Form>
                 )}
-            </div>
+            </Modal>
+
+            <Card
+                title="Registered Courses"
+                style={{ borderRadius: 12, boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
+            >
+                {tableLoading ? <Spin tip="Loading table..." /> :
+                    <Table dataSource={registeredCourses} columns={columns} pagination={{ pageSize: 5 }} />}
+            </Card>
         </div>
     );
 };

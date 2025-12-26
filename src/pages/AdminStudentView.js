@@ -3,100 +3,73 @@ import { Layout, Button } from 'antd';
 import { NavLink } from 'react-router-dom';
 import StdTableView from '../components/studentView';
 
-const { Content } = Layout;
+const { Content, Sider } = Layout;
 
 const StdView = () => {
     return (
-        <div className='container'>
-            <Layout>
-                <Layout>
-                    <Content
-                        style={{
-                            // margin: '24px 16px 0',
-                        }}
-                    >
-                        <div
-                            style={{
-                                // padding: 20,
-                                minHeight: 360,
-                                display: 'flex',
-                                justifyContent: 'space-between',
+        <Layout style={{ minHeight: '100vh' }}>
 
+            {/* Sidebar */}
+            {/* <Sider
+                width={260}
+                style={{
+                    background: 'linear-gradient(180deg, #6a11cb, #2575fc)',
+                    padding: '20px 0',
+                }}
+            >
+                <div style={{ textAlign: 'center', color: '#fff', marginBottom: 40 }}>
+                    <h1 style={{ color: '#fff', marginBottom: 0 }}>E-Learning</h1>
+                    <p style={{ opacity: 0.9 }}>Learn From Home</p>
+                </div>
+
+                {[
+                    { to: '/AdminCourse', label: 'Courses' },
+                    { to: '/StudentView', label: 'Students', active: true },
+                    { to: '/AdminContent', label: 'Content' },
+                    { to: '/', label: 'Logout' },
+                ].map((item, index) => (
+                    <NavLink key={index} to={item.to} style={{ textDecoration: 'none' }}>
+                        <Button
+                            type="text"
+                            block
+                            style={{
+                                color: item.active ? '#6a11cb' : '#fff',
+                                backgroundColor: item.active ? '#fff' : 'transparent',
+                                padding: '18px',
+                                margin: '6px 12px',
+                                borderRadius: '10px',
+                                fontWeight: 600,
                             }}
                         >
-                            <div className='dashSidePortion'>
-                                <div className='mainContainer'>
-                                    <h1>
-                                        E-Learning
-                                    </h1>
-                                    <p>Learn From Home</p>
-                                </div>
+                            {item.label}
+                        </Button>
+                    </NavLink>
+                ))}
+            </Sider> */}
 
-                                <NavLink to={"/AdminCourse"} style={{
-                                    textDecoration: 'none',
-                                }}>
-                                    <Button type="text" block style={{
-                                        color: 'white',
-                                        padding: '30px'
-                                    }}>
-                                        <h5>Courses</h5>
-                                    </Button>
-                                </NavLink>
-
-                                <NavLink to={"/StudentView"} style={{
-                                    textDecoration: 'none',
-                                }}>
-                                    <Button type="text" block style={{
-                                        padding: '30px',
-                                        backgroundColor: 'white',
-                                        color: 'blueviolet'
-
-                                    }}>
-                                        <h5>Students</h5>
-
-                                    </Button>
-                                </NavLink>
-
-                                <NavLink to={"/AdminContent"} style={{
-                                    textDecoration: 'none',
-                                }}>
-                                    <Button type="text" block style={{
-                                        color: 'white',
-                                        padding: '30px'
-
-                                    }}>
-                                        <h5>Content</h5>
-
-                                    </Button>
-                                </NavLink>
-
-                                <NavLink to={"/"} style={{
-                                    textDecoration: 'none',
-                                }}>
-                                    <Button type="text" block style={{
-                                        color: 'white',
-                                        padding: '30px'
-                                    }}>
-                                        <h5>Logout</h5>
-                                    </Button>
-                                </NavLink>
-
-                            </div>
-                            <div className='DetailAdmDash'>
-                                <div className='dashboardHeader' style={{ width: '100%' }}>
-                                    <div className='dashboardHeader2' style={{
-                                        padding: '20px',
-                                        width: '100%',
-                                    }}>
-                                        <StdTableView />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </Content>
-                </Layout>
+            {/* Main Content */}
+            <Layout>
+                <Content
+                    style={{
+                        padding: '30px',
+                        background: '#f5f7fb',
+                    }}
+                >
+                    <div
+                        style={{
+                            background: '#fff',
+                            padding: '25px',
+                            borderRadius: '12px',
+                            boxShadow: '0 8px 20px rgba(0,0,0,0.05)',
+                            minHeight: '80vh',
+                        }}
+                    >
+                        <StdTableView />
+                    </div>
+                </Content>
             </Layout>
-        </div >
+
+        </Layout>
     );
 };
 

@@ -5,13 +5,12 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAjwlA5au9qwjsE2Qw-NBZhqKYo4O-SLik",
-  authDomain: "password-generator-f98e6.firebaseapp.com",
-  projectId: "password-generator-f98e6",
-  storageBucket: "password-generator-f98e6.appspot.com",
-  messagingSenderId: "314595302531",
-  appId: "1:314595302531:web:0a1b997e459be0af478fb6",
-  measurementId: "G-RXX0K71PX4"
+  apiKey: "AIzaSyApNu8sxriy-I7XYEmBmIi159dP2wcxHXs",
+  authDomain: "e-learning-529e3.firebaseapp.com",
+  projectId: "e-learning-529e3",
+  storageBucket: "e-learning-529e3.appspot.com",
+  messagingSenderId: "190515335906",
+  appId: "1:190515335906:web:06058fb868cda4779884bb"
 };
 
 

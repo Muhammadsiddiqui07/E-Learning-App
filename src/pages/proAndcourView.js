@@ -77,44 +77,88 @@ function ProAndCourView() {
     ];
 
     return (
-        <div className='pro-and-cour-view-container'>
-            <div className='DashHeader'>
-                <h1 style={{ color: 'blueviolet' }}>Dashboard :</h1>
-                <div>
-                    <DropDown />
-                </div>
+        <div style={{ width: "100%" }}>
+            {/* ===== Header ===== */}
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: 24,
+                }}
+            >
+                <h2 style={{ margin: 0, color: "#1f1f3d" }}>Dashboard</h2>
+                <DropDown />
             </div>
-            <Row gutter={[20, 20]} className='profile-row'>
-                <Col xs={24} md={10}>
-                    <Card title="Profile Details:" bordered={false} className='profile-card'>
-                        {data && (
-                            <div>
-                                <img
-                                    src={data.imageUrl ? data.imageUrl : proPic}
-                                    alt='profile-picture'
-                                    className='proViewImage'
-                                    style={{ marginBottom: '20px' }}
-                                />
-                                <h6>First Name: {data.firstname || 'Your First Name'}</h6>
-                                <h6>Last Name: {data.lastname || 'Your Last Name'}</h6>
-                                <h6>Email: {data.email || 'Your Email'}</h6>
-                                <h6>Number: {data.phonenumber || 'Your Phone Number'}</h6>
-                            </div>
-                        )}
+
+            {/* ===== Content ===== */}
+            <Row gutter={[24, 24]}>
+                {/* ===== Profile Card ===== */}
+                <Col xs={24} md={8}>
+                    <Card
+                        bordered={false}
+                        style={{
+                            borderRadius: 12,
+                            textAlign: "center",
+                            boxShadow: "0 8px 20px rgba(0,0,0,0.05)",
+                        }}
+                    >
+                        <img
+                            src={data.imageUrl || proPic}
+                            alt="profile"
+                            style={{
+                                width: 110,
+                                height: 110,
+                                borderRadius: "50%",
+                                objectFit: "cover",
+                                marginBottom: 16,
+                                border: "3px solid #e6f4ff",
+                            }}
+                        />
+
+                        <h3 style={{ marginBottom: 4 }}>
+                            {data.firstname || "First Name"} {data.lastname || ""}
+                        </h3>
+
+                        <p style={{ color: "#8c8c8c", marginBottom: 16 }}>
+                            {data.email || "Email"}
+                        </p>
+
+                        <div style={{ textAlign: "left" }}>
+                            <p><strong>Phone:</strong> {data.phonenumber || "N/A"}</p>
+                            <p><strong>User ID:</strong> {uid?.slice(0, 10)}...</p>
+                        </div>
                     </Card>
                 </Col>
-                <Col xs={24} md={14}>
-                    <Card title="Courses Detail:" bordered={false} className='courses-card'>
+
+                {/* ===== Courses Table ===== */}
+                <Col xs={24} md={16}>
+                    <Card
+                        bordered={false}
+                        title="Registered Courses"
+                        style={{
+                            borderRadius: 12,
+                            boxShadow: "0 8px 20px rgba(0,0,0,0.05)",
+                        }}
+                    >
                         {tableLoading ? (
-                            <Spin tip="Loading table data..." />
+                            <div style={{ textAlign: "center", padding: 40 }}>
+                                <Spin tip="Loading courses..." />
+                            </div>
                         ) : (
-                            <Table dataSource={registeredCourses} columns={columns} pagination={false} />
+                            <Table
+                                dataSource={registeredCourses}
+                                columns={columns}
+                                pagination={{ pageSize: 5 }}
+                                bordered
+                            />
                         )}
                     </Card>
                 </Col>
             </Row>
         </div>
     );
+
 }
 
 export default ProAndCourView;

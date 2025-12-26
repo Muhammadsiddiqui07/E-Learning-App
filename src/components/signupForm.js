@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Form, Input, Spin } from 'antd';
+import { Button, Form, Input, Spin, Card, Typography, Alert, Divider } from 'antd';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { app, getAuth, createUserWithEmailAndPassword, db, doc, setDoc } from '../firebase-setup/firebase';
 
@@ -40,59 +40,122 @@ const SignupForm = () => {
     };
 
     return (
-        <div>
-            <Spin spinning={loading} />
-            <p>{signupError}</p>
-            <Form
-                name="signup"
-                labelCol={{ span: 8 }}
-                wrapperCol={{ span: 16 }}
-                style={{ maxWidth: 600 }}
-                initialValues={{ remember: true }}
-                onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
-                autoComplete="off"
-            >
-                <h2>Signup Form</h2>
-                <Form.Item
-                    label="First Name"
-                    name="firstname"
-                    rules={[{ required: true, message: 'Please input your first name!' }]}
+        <div
+            style={{
+                // minHeight: "100vh",
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                // background: "linear-gradient(135deg, #f0f5ff, #e6f4ff)",
+                padding: 6,
+            }}
+        >
+            <Spin spinning={loading}>
+                <Card
+                    style={{
+                        width: 500,
+                        maxWidth: 800, // 🔥 SAME AS LOGIN
+                        borderRadius: 12,
+                        boxShadow: "0 15px 35px rgba(0,0,0,0.1)",
+                    }}
+                    bodyStyle={{ padding: 32 }}
                 >
-                    <Input />
-                </Form.Item>
-                <Form.Item
-                    label="Last Name"
-                    name="lastname"
-                    rules={[{ required: true, message: 'Please input your last name!' }]}
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item
-                    label="Email"
-                    name="email"
-                    rules={[{ required: true, message: 'Please input your email!' }]}
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item
-                    label="Password"
-                    name="password"
-                    rules={[{ required: true, message: 'Please input your password!' }]}
-                >
-                    <Input.Password />
-                </Form.Item>
-                <Form.Item wrapperCol={{ offset: 4 }}>
-                    <p>Already have an account? <NavLink to="/">Login</NavLink> here!</p>
-                </Form.Item>
-                <Form.Item wrapperCol={{ offset: 4, span: 16 }}>
-                    <Button type="primary" htmlType="submit">
-                        Register
-                    </Button>
-                </Form.Item>
-            </Form>
+                    <Typography.Title
+                        level={3}
+                        style={{ textAlign: "center", marginBottom: 6 }}
+                    >
+                        Create Your Account
+                    </Typography.Title>
+
+                    <Typography.Text
+                        type="secondary"
+                        style={{ display: "block", textAlign: "center", marginBottom: 24 }}
+                    >
+                        Signup to continue to your dashboard
+                    </Typography.Text>
+
+                    {signupError && (
+                        <Alert
+                            type="error"
+                            message={signupError}
+                            showIcon
+                            style={{ marginBottom: 16 }}
+                        />
+                    )}
+
+                    <Form
+                        layout="vertical"
+                        name="signup"
+                        onFinish={onFinish}
+                        onFinishFailed={onFinishFailed}
+                        autoComplete="off"
+                    >
+                        <div>
+
+                            <Form.Item
+                                label="First Name"
+                                name="firstname"
+                                rules={[{ required: true, message: "First name is required" }]}
+                            >
+                                <Input size="large" placeholder="Enter first name" />
+                            </Form.Item>
+
+                            <Form.Item
+                                label="Last Name"
+                                name="lastname"
+                                rules={[{ required: true, message: "Last name is required" }]}
+                            >
+                                <Input size="large" placeholder="Enter last name" />
+                            </Form.Item>
+
+                        </div>
+
+                        <Form.Item
+                            label="Email Address"
+                            name="email"
+                            rules={[
+                                { required: true, message: "Email is required" },
+                                { type: "email", message: "Invalid email format" },
+                            ]}
+                        >
+                            <Input size="large" placeholder="example@email.com" />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Password"
+                            name="password"
+                            rules={[{ required: true, message: "Password is required" }]}
+                        >
+                            <Input.Password size="large" placeholder="Create a strong password" />
+                        </Form.Item>
+
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            size="large"
+                            block
+                            style={{ marginTop: 12 }}
+                        >
+                            Register
+                        </Button>
+
+                        <Divider />
+
+                        <div style={{ textAlign: "center" }}>
+                            <Typography.Text type="secondary">
+                                Already have an account?{" "}
+                                <NavLink to="/" style={{ fontWeight: 500 }}>
+                                    Login here
+                                </NavLink>
+                            </Typography.Text>
+                        </div>
+                    </Form>
+                </Card>
+            </Spin>
         </div>
     );
+
 };
 
 export default SignupForm;

@@ -23,14 +23,20 @@ const Login = () => {
                     className='LoginForm'
                     bordered={true}
                     style={{
-                        width: 900,
+                        width: '80%',
                     }}
                 >
-                    <div className='loginpart'>
+                    <div className='loginpart' style={{
+                        width: '100%'
+                    }}>
                         <div className='loginImgDiv'>
                             <img src={loginImage} alt='login-Image' />
                         </div>
-                        <LoginForm handleSubmit={handleSubmit} isLoading={isLoading} />
+                        <div style={{
+                            width:'40%',
+                        }}>
+                            <LoginForm handleSubmit={handleSubmit} isLoading={isLoading} />
+                        </div>
                     </div>
                 </Card>
             </div>

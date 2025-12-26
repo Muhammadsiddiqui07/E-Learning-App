@@ -7,180 +7,191 @@ import { db, storage, doc, setDoc, ref, uploadBytesResumable, getDownloadURL, ge
 const ProfileCard = () => {
     const [image, setImage] = useState(null);
     const [imageUrl, setImageUrl] = useState(profilePicture);
-    const [loading, setLoading] = useState(false); // For form submission
-    const [fetching, setFetching] = useState(true); // For fetching user data
-    const [proError, setProError] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [fetching, setFetching] = useState(true);
+    const [message, setMessage] = useState('');
     const uid = localStorage.getItem('uid');
     const [userData, setUserData] = useState({});
+    const [form] = Form.useForm();
 
-    const [form] = Form.useForm(); // Create form instance
-
-    const fetchUserData = async () => {
-        setFetching(true);
-        try {
-            const docRef = doc(db, "Users", uid);
-            const docSnap = await getDoc(docRef);
-
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                setUserData(data);
-                setImageUrl(data.imageUrl || profilePicture); // Set image URL if available
-                form.setFieldsValue({
-                    firstName: data.firstname,
-                    LastName: data.lastname,
-                    Email: data.email,
-                    PhoneNumber: data.phonenumber
-                });
-            } else {
-                console.log("No such document!");
+    // Fetch user data
+    useEffect(() => {
+        const fetchUserData = async () => {
+            setFetching(true);
+            try {
+                const docRef = doc(db, "Users", uid);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    setUserData(data);
+                    setImageUrl(data.imageUrl || profilePicture);
+                    form.setFieldsValue({
+                        firstName: data.firstname,
+                        lastName: data.lastname,
+                        email: data.email,
+                        phone: data.phonenumber
+                    });
+                }
+            } catch (error) {
+                console.error(error);
+                setMessage('Error fetching user data.');
+            } finally {
+                setFetching(false);
             }
-        } catch (error) {
-            setProError('Failed to fetch user data.');
-            console.error('Error fetching user data:', error);
-        } finally {
-            setFetching(false);
-        }
-    };
+        };
+        fetchUserData();
+    }, [uid, form]);
 
+    // Upload image
     const uploadFile = (file) => {
         return new Promise((resolve, reject) => {
             const storageRef = ref(storage, `images/${file.name}`);
             const uploadTask = uploadBytesResumable(storageRef, file);
-
             uploadTask.on('state_changed',
-                (snapshot) => {
-                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    console.log('Upload is ' + progress + '% done');
-                },
-                (error) => {
-                    setProError('Failed to upload image.');
-                    reject(error);
-                },
-                () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                        resolve(downloadURL);
-                    });
-                }
+                () => { },
+                (err) => reject(err),
+                () => getDownloadURL(uploadTask.snapshot.ref).then(resolve)
             );
         });
     };
 
+    // Submit form
     const onFinish = async (values) => {
         setLoading(true);
         try {
             if (image) {
-                const downloadURL = await uploadFile(image);
-                values.imageUrl = downloadURL;
+                values.imageUrl = await uploadFile(image);
             } else {
-                values.imageUrl = imageUrl; // Use existing image URL if no new image
+                values.imageUrl = imageUrl;
             }
-
             await setDoc(doc(db, "Users", uid), {
                 firstname: values.firstName,
-                lastname: values.LastName,
-                email: values.Email,
-                phonenumber: values.PhoneNumber,
+                lastname: values.lastName,
+                email: values.email,
+                phonenumber: values.phone,
                 imageUrl: values.imageUrl,
                 id: uid
             });
-
-            setProError('User profile updated successfully.');
+            setMessage('Profile updated successfully!');
         } catch (error) {
-            setProError('Failed to update user profile.');
-            console.error('Error updating user profile:', error);
+            console.error(error);
+            setMessage('Failed to update profile.');
         } finally {
             setLoading(false);
         }
     };
 
-    const onFinishFailed = (errorInfo) => {
-        setProError('Failed to submit the form.');
-        console.error('Failed:', errorInfo);
-        setLoading(false);
-    };
-
-    const onImageChange = (event) => {
-        if (event.target.files && event.target.files[0]) {
-            const selectedImage = event.target.files[0];
-            setImage(selectedImage);
-            setImageUrl(URL.createObjectURL(selectedImage));
+    // Image preview
+    const onImageChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setImage(file);
+            setImageUrl(URL.createObjectURL(file));
         }
     };
 
-    useEffect(() => {
-        fetchUserData();
-    }, []);
-
     return (
-        <div className='profileCard'>
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 40 }}>
             <Card
-                title="Profile Details"
-                bordered={true}
                 style={{
-                    width: '60%',
-                    height: '100%',
-                    textAlign: 'center'
+                    width: 500,
+                    borderRadius: 16,
+                    boxShadow: '0 12px 24px rgba(0,0,0,0.15)',
+                    overflow: 'hidden',
+                    background: '#fdfbff'
                 }}
             >
                 <Spin spinning={loading || fetching}>
-                    {proError && <p style={{ color: 'blueviolet' }}>{proError}</p>}
+                    {/* Message */}
+                    {message && (
+                        <p style={{ color: 'blueviolet', fontWeight: 600, textAlign: 'center' }}>{message}</p>
+                    )}
+
+                    {/* Profile Picture */}
+                    <div style={{ position: 'relative', marginBottom: 30, textAlign: 'center' }}>
+                        <img
+                            src={imageUrl}
+                            alt="Profile"
+                            style={{
+                                width: 130,
+                                height: 130,
+                                borderRadius: '50%',
+                                // border: '4px solid blueviolet',
+                                objectFit: 'cover',
+                                transition: 'all 0.3s',
+                            }}
+                        />
+                        <label htmlFor="file-input"
+                            style={{
+                                position: 'absolute',
+                                bottom: 0,
+                                right: 'calc(50% - 65px)',
+                                // background: 'blueviolet',
+                                borderRadius: '50%',
+                                padding: 5,
+                                cursor: 'pointer',
+                                // color: '#fff',
+                                fontSize: 18,
+                                // boxShadow: '0 2px 2px rgba(0,0,0,0.2)',
+                                transition: 'all 0.3s',
+                            }}
+                        >
+                            <IoCamera />
+                        </label>
+                        <input id="file-input" type="file" onChange={onImageChange} style={{ display: 'none' }} />
+                    </div>
+
+                    {/* Form */}
                     <Form
                         form={form}
-                        name="basic"
-                        labelCol={{ span: 8 }}
-                        wrapperCol={{ span: 12 }}
-                        style={{ maxWidth: 800 }}
-                        initialValues={{ remember: true }}
+                        layout="vertical"
                         onFinish={onFinish}
-                        onFinishFailed={onFinishFailed}
-                        autoComplete="off"
+                        style={{ maxWidth: '100%' }}
                     >
-                        <div className='ProfilePicture'>
-                            <img src={imageUrl} alt='Profile-Picture' style={{ width: '100px', height: '100px', borderRadius: '50%', margin:'20px' , marginTop:'-150px' }} />
-                            <div className='image-upload'>
-                                <label htmlFor="file-input">
-                                    <IoCamera style={{ marginTop: '-70px', marginLeft: '-20px' }} />
-                                </label>
-                                <input id="file-input" type="file" onChange={onImageChange} className="filetype" />
-                            </div>
-                        </div>
                         <Form.Item
                             label="First Name"
                             name="firstName"
-                            rules={[{ required: true, message: 'Please input your First Name!' }]}
+                            rules={[{ required: true, message: 'Please input your first name!' }]}
                         >
-                            <Input />
+                            <Input placeholder="Enter first name" />
                         </Form.Item>
 
                         <Form.Item
                             label="Last Name"
-                            name="LastName"
-                            rules={[{ required: true, message: 'Please input your Last Name!' }]}
+                            name="lastName"
+                            rules={[{ required: true, message: 'Please input your last name!' }]}
                         >
-                            <Input />
+                            <Input placeholder="Enter last name" />
                         </Form.Item>
 
                         <Form.Item
                             label="Email"
-                            name="Email"
-                            rules={[{ required: true, message: 'Please input your Email!' }]}
+                            name="email"
+                            rules={[{ required: true, message: 'Please input your email!' }]}
                         >
-                            <Input />
+                            <Input placeholder="Enter email" />
                         </Form.Item>
 
                         <Form.Item
                             label="Phone Number"
-                            name="PhoneNumber"
-                            rules={[{ required: true, message: 'Please input your Phone Number!' }]}
+                            name="phone"
+                            rules={[{ required: true, message: 'Please input your phone number!' }]}
                         >
-                            <Input />
+                            <Input placeholder="Enter phone number" />
                         </Form.Item>
 
-                        <Form.Item
-                            wrapperCol={{ span: 28 }}
-                        >
-                            <Button type="primary" htmlType="submit">
-                                Update
+                        <Form.Item>
+                            <Button
+                                type="primary"
+                                htmlType="submit"
+                                style={{
+                                    backgroundColor: 'blueviolet',
+                                    borderColor: 'blueviolet',
+                                    width: '100%',
+                                    fontWeight: 'bold',
+                                }}
+                            >
+                                Update Profile
                             </Button>
                         </Form.Item>
                     </Form>

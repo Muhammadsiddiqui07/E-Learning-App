@@ -1,60 +1,41 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Spin, TreeSelect, Button, Table } from 'antd';
+import { Form, Spin, TreeSelect, Button, Table, Card, Typography } from 'antd';
 import DropDown from "./dropDown";
 import { db, collection, getDocs, query, where } from '../firebase-setup/firebase';
 
 function DisplayContent() {
     const [Title, setTitle] = useState([]);
-    const [Category, setCategory] = useState([]);
-    const [contentCategory, setContentCategory] = useState([]);
-    const [contentTitle, setContentTitle] = useState([]);
     const [Content, setContent] = useState([]);
     const [allContent, setAllContent] = useState([]);
-    const [ContentType, setContentType] = useState([]);
     const [LoadingTitle, setLoadingTitle] = useState(false);
     const uid = localStorage.getItem('uid');
-    const [checkTitle, setCheckTitle] = useState(false);
 
     const fetchContent = async () => {
         setLoadingTitle(true);
 
+        // Fetch registered courses
         const registeredCourseQuery = query(collection(db, "Registered-Course"), where("uid", "==", uid));
         const querySnapshot = await getDocs(registeredCourseQuery);
         const CourseTitle = [];
-        const CourseCategory = [];
-
         querySnapshot.forEach((doc) => {
             const data = doc.data();
             CourseTitle.push({ title: data.courseTitle, value: data.courseTitle });
-            CourseCategory.push(data.CourseCategory);
         });
-
         setTitle(CourseTitle);
-        setCategory(CourseCategory);
 
-        console.log('uid', uid);
-        console.log('Registered title or category', CourseTitle, CourseCategory);
-
+        // Fetch all content
         const contentSnapshot = await getDocs(collection(db, "Content"));
         const content = [];
-        const category = [];
-        const title = [];
-        const type = [];
-
         contentSnapshot.forEach((doc) => {
             const data = doc.data();
-            category.push(data.Category);
-            title.push(data.CourseTitle);
-            type.push(data.Type);
-            content.push({ key: doc.id, Title: data.CourseTitle, Type: data.Type, Content: data.YouTubeURL ? data.YouTubeURL : data.VideoURL });
+            content.push({
+                key: doc.id,
+                Title: data.CourseTitle,
+                Type: data.Type,
+                Content: data.YouTubeURL || data.VideoURL
+            });
         });
-
-        setContentCategory(category);
-        setContentTitle(title);
-        setContent([]); // initialize with empty content
-        setAllContent(content); // set all content initially
-        setContentType(type);
-
+        setAllContent(content);
         setLoadingTitle(false);
     };
 
@@ -65,73 +46,45 @@ function DisplayContent() {
     const onFinish = (values) => {
         const selectedContent = allContent.filter(item => item.Title === values.Title);
         setContent(selectedContent);
-        setCheckTitle(true);
-    };
-
-    const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
     };
 
     const columns = [
-        {
-            title: 'Title',
-            dataIndex: 'Title',
-            key: 'Title',
-        },
-        {
-            title: 'Type',
-            dataIndex: 'Type',
-            key: 'Type',
-        },
-        {
-            title: 'Content',
-            dataIndex: 'Content',
-            key: 'Content',
-        },
+        { title: 'Title', dataIndex: 'Title', key: 'Title' },
+        { title: 'Type', dataIndex: 'Type', key: 'Type' },
+        { title: 'Content', dataIndex: 'Content', key: 'Content' },
     ];
 
     return (
-        <div style={{ width: '100%' }}>
-            <div className='DashHeader'>
-                <h1 style={{ color: 'blueviolet' }}>Content :</h1>
-                <div>
-                    <DropDown />
-                </div>
+        <div style={{ width: '100%', padding: 20 }}>
+            <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography.Title level={3} style={{ color: 'blueviolet' }}>Content</Typography.Title>
+                <DropDown />
             </div>
-            <br />
-            <br />
-            <div>
-                <Form
-                    onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
-                    autoComplete="off"
-                >
+
+            <Card
+                title="Select Course"
+                style={{ marginBottom: 20, borderRadius: 12, boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
+            >
+                <Form onFinish={onFinish} layout="vertical">
                     <Form.Item
                         label="Course Title"
                         name="Title"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please select a course!',
-                            },
-                        ]}
+                        rules={[{ required: true, message: 'Please select a course!' }]}
                     >
-                        {LoadingTitle ? (
-                            <Spin />
-                        ) : (
-                            <TreeSelect
-                                treeData={Title}
-                                treeDefaultExpandAll
-                            />
-                        )}
+                        {LoadingTitle ? <Spin /> : <TreeSelect treeData={Title} treeDefaultExpandAll placeholder="Select Course" />}
                     </Form.Item>
-                    <Button type='primary' htmlType="submit" style={{ backgroundColor: 'blueviolet' }}>Show Content</Button>
+                    <Button type="primary" htmlType="submit" style={{ backgroundColor: 'blueviolet' }}>
+                        Show Content
+                    </Button>
                 </Form>
-            </div>
+            </Card>
 
-            <div style={{ padding: '20px' }}>
-                <Table dataSource={Content} columns={columns} />
-            </div>
+            <Card
+                title="Content Details"
+                style={{ borderRadius: 12, boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
+            >
+                <Table dataSource={Content} columns={columns} pagination={{ pageSize: 5 }} />
+            </Card>
         </div>
     );
 }

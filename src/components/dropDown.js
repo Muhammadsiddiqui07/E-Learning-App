@@ -73,7 +73,7 @@ const DropDown = () => {
                             className='dashHeadPic'
                         />
                     </h3>
-                    <DownOutlined />
+                    {/* <DownOutlined /> */}
                 </Space>
             </a>
         </Dropdown>

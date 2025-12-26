@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Form, Input, Spin, Alert } from 'antd';
+import { Button, Form, Input, Spin, Alert, Card, Divider, Typography } from 'antd';
 import { NavLink, useNavigate } from 'react-router-dom';
 import goo from '../Assest/google-logo.png';
 import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, doc, setDoc, db } from '../firebase-setup/firebase';
@@ -69,51 +69,115 @@ const LoginForm = () => {
     };
 
     return (
-        <div style={{ maxWidth: 500, margin: 'auto', padding: '20px' }}>
+        <div
+            style={{
+                // width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                // background: "linear-gradient(135deg, #f0f5ff, #e6f4ff)",
+                padding: 6,
+                width: '100%'
+            }}
+        >
             <Spin spinning={isLoading}>
-                {loginError && <Alert message={loginError} type="error" showIcon />}
-                <Form
-                    name="login"
-                    labelCol={{ span: 8 }}
-                    wrapperCol={{ span: 16 }}
-                    initialValues={{ remember: true }}
-                    onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
-                    autoComplete="off"
+                <Card
+                    style={{
+                        width: 450,
+                        maxWidth: 800,   // 🔥 CARD WIDTH CONTROL HERE
+                        borderRadius: 12,
+                        boxShadow: "0 15px 35px rgba(0,0,0,0.1)",
+                    }}
+                    bodyStyle={{ padding: 40 }}
                 >
-                    <h2>Login Form</h2>
-                    <p>Note: Admin also log in from this form with email.</p>
-                    <Form.Item
-                        label="Email"
-                        name="username"
-                        rules={[{ required: true, message: 'Please input your email!', type: 'email' }]}
+                    <Typography.Title level={3} style={{ textAlign: "center", marginBottom: 5 }}>
+                        Login Account
+                    </Typography.Title>
+
+                    <Typography.Text
+                        type="secondary"
+                        style={{ display: "block", textAlign: "center", marginBottom: 20 }}
                     >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="Password"
-                        name="password"
-                        rules={[{ required: true, message: 'Please input your password!' }]}
+                        Admin & users login using email
+                    </Typography.Text>
+
+                    {loginError && (
+                        <Alert
+                            message={loginError}
+                            type="error"
+                            showIcon
+                            style={{ marginBottom: 16 }}
+                        />
+                    )}
+
+                    <Form
+                        layout="vertical"
+                        name="login"
+                        onFinish={onFinish}
+                        onFinishFailed={onFinishFailed}
+                        autoComplete="off"
                     >
-                        <Input.Password />
-                    </Form.Item>
-                    <br />
-                    <Form.Item wrapperCol={{ offset: 2 }}>
-                        <p>Don't have an account? <NavLink to="/Signup">Signup</NavLink> here!</p>
-                    </Form.Item>
-                    <Form.Item wrapperCol={{ offset: 2, span: 16 }}>
-                        <Button type="primary" htmlType="submit" style={{ width: '80%' }}>
+                        <Form.Item
+                            label="Email Address"
+                            name="username"
+                            rules={[
+                                { required: true, message: "Please enter your email" },
+                                { type: "email", message: "Invalid email format" },
+                            ]}
+                        >
+                            <Input size="large" placeholder="example@email.com" />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Password"
+                            name="password"
+                            rules={[{ required: true, message: "Please enter password" }]}
+                        >
+                            <Input.Password size="large" placeholder="Enter password" />
+                        </Form.Item>
+
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            size="large"
+                            block
+                            style={{ marginTop: 10 }}
+                        >
                             Login
                         </Button>
-                        <hr style={{ width: '300px' }} />
-                        <div className='btn-main'>
-                            <Button onClick={loginWithGoogle}><img className='img-btn' src={goo} alt='google' />Login With Google</Button>
+
+                        <Divider plain>OR</Divider>
+
+                        <Button
+                            size="large"
+                            block
+                            onClick={loginWithGoogle}
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                gap: 10,
+                                borderRadius: 8,
+                            }}
+                        >
+                            <img src={goo} alt="google" style={{ width: 20 }} />
+                            Login with Google
+                        </Button>
+
+                        <div style={{ textAlign: "center", marginTop: 20 }}>
+                            <Typography.Text type="secondary">
+                                Don’t have an account?{" "}
+                                <NavLink to="/Signup" style={{ fontWeight: 500 }}>
+                                    Signup here
+                                </NavLink>
+                            </Typography.Text>
                         </div>
-                    </Form.Item>
-                </Form>
+                    </Form>
+                </Card>
             </Spin>
         </div>
     );
+
 };
 
 export default LoginForm;
